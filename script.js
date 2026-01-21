@@ -169,6 +169,8 @@ setupSearch("paediatricSearch", "paediatricContainer");
 
 // ----- SERVICE WORKER REGISTRATION (PWA STEP 3) -----
 if ("serviceWorker" in navigator) {
+   navigator.serviceWorker.register("./service-worker.js");
+}
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("service-worker.js")
@@ -178,4 +180,5 @@ if ("serviceWorker" in navigator) {
 }
 
 });
+
 
