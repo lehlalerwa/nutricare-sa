@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriCare SA</title>
+<button id="installBtn" hidden>
+  📲 Install NutriCare SA
+</button>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png" type="image/png">
+</head>
+
+<body>
+
+<header>
+  <h1>NutriCare SA</h1>
+  <p>Clinical Nutrition Reference</p>
+</header>
+
+<main>
+
+  <!-- ================= Adult ================= -->
+ <section id="adult">
+  <h2>Adult Recommendations</h2>
+  <input type="text" id="adultSearch" placeholder="Search adult conditions...">
+  <div id="adultContainer"></div>
+</section>
+
+
+  <!-- ================= Paediatric ================= -->
+ <section id="paediatric">
+  <h2>Paediatric Recommendations</h2>
+  <input type="text" id="paediatricSearch" placeholder="Search paediatric conditions...">
+  <div id="paediatricContainer"></div>
+</section>
+
+</main>
+
+<script src="script.js"></script>
+<footer class="app-footer">
+  <p><strong>NutriCare SA v1.0</strong></p>
+  <p>Last updated: <span id="lastUpdated"></span></p>
+  <p class="disclaimer">
+    For clinical reference only. Always apply professional judgement.
+  </p>
+</footer>
+</body>
+</html>
