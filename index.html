@@ -7,6 +7,8 @@
   <meta name="description" content="NutriCare SA is a practical clinical nutrition reference for South African healthcare professionals.">
   <title>NutriCare SA | Clinical Nutrition Reference</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -63,7 +65,13 @@
     <section class="page content-page" id="page-adult" data-page-section="adult">
       <p class="eyebrow">CLINICAL REFERENCE</p><h1>Adult nutrition recommendations</h1>
       <p class="page-intro">Nutrition guidance for common adult clinical conditions.</p>
-      <div class="coming-panel"><span>🩺</span><h2>Adult reference</h2><p>This section is being prepared. The next build step will connect and test the adult recommendation data.</p></div>
+      <div class="reference-toolbar">
+        <label class="search-label" for="adultSearch">Search a condition</label>
+        <input id="adultSearch" class="search-input" type="search" placeholder="e.g. diabetes, kidney disease, burns" autocomplete="off">
+        <p class="data-status" id="adultStatus" role="status">Connecting to the clinical reference database…</p>
+      </div>
+      <div class="reference-list" id="adultList" aria-live="polite"></div>
+      <p class="clinical-caveat">These starter entries are reference prompts, not patient-specific prescriptions. Confirm all values against current evidence, patient assessment and local protocols before clinical use.</p>
     </section>
 
     <section class="page content-page" id="page-paediatric" data-page-section="paediatric">
