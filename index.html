@@ -77,7 +77,13 @@
     <section class="page content-page" id="page-paediatric" data-page-section="paediatric">
       <p class="eyebrow">CLINICAL REFERENCE</p><h1>Paediatric nutrition recommendations</h1>
       <p class="page-intro">Nutrition guidance for infants, children and adolescents.</p>
-      <div class="coming-panel"><span>🧒</span><h2>Paediatric reference</h2><p>This section is being prepared. The next build step will connect and test the paediatric recommendation data.</p></div>
+      <div class="reference-toolbar">
+        <label class="search-label" for="paediatricSearch">Search an age group or condition</label>
+        <input id="paediatricSearch" class="search-input" type="search" placeholder="e.g. infant, SAM, burns, renal" autocomplete="off">
+        <p class="data-status" id="paediatricStatus" role="status">Connecting to the paediatric reference database…</p>
+      </div>
+      <div class="reference-list" id="paediatricList" aria-live="polite"></div>
+      <p class="clinical-caveat">Paediatric requirements vary by gestational age, growth, diagnosis, clinical phase and individual assessment. These entries are draft reference material and will remain hidden until reviewed and approved.</p>
     </section>
 
     <section class="page content-page" id="page-biochemistry" data-page-section="biochemistry">
