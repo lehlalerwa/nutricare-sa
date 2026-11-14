@@ -376,6 +376,119 @@ document.addEventListener("DOMContentLoaded", () => {
   fluidsSearch.addEventListener("input", renderFluidRows);
   loadFluidGuidelines();
 
+
+  // Feed compositions are loaded only after clinical approval.
+  const feedsList = document.getElementById("feedsList");
+  const feedsStatus = document.getElementById("feedsStatus");
+  const feedsSearch = document.getElementById("feedsSearch");
+  let feedRows = [];
+
+  function renderFeedRows() {
+    const query = (feedsSearch.value || "").trim().toLowerCase();
+    const filtered = feedRows.filter(row =>
+      [row.product_name, row.category, row.notes, row.source_reference]
+        .some(value => String(value || "").toLowerCase().includes(query))
+    );
+
+    feedsList.replaceChildren();
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = feedRows.length
+        ? "No matching feed products. Try another search."
+        : "No approved feed compositions are available yet. Draft entries remain hidden until reviewed.";
+      feedsList.append(empty);
+      return;
+    }
+
+    filtered.forEach(row => {
+      const card = document.createElement("details");
+      card.className = "reference-card";
+      const summary = document.createElement("summary");
+      summary.textContent = safeText(row.product_name);
+      const body = document.createElement("div");
+      body.className = "reference-card-body";
+
+      if (row.category) {
+        const category = document.createElement("p");
+        category.className = "reference-description";
+        category.textContent = "Category: " + row.category;
+        body.append(category);
+      }
+
+      const metrics = document.createElement("div");
+      metrics.className = "reference-metrics";
+      [
+        ["Energy", row.energy_kcal_per_100ml, "kcal/100 mL"],
+        ["Protein", row.protein_g_per_100ml, "g/100 mL"],
+        ["Carbohydrate", row.carbohydrate_g_per_100ml, "g/100 mL"],
+        ["Fat", row.fat_g_per_100ml, "g/100 mL"]
+      ].forEach(([label, value, unit]) => {
+        const metric = document.createElement("div");
+        metric.className = "metric";
+        const small = document.createElement("small");
+        small.textContent = label;
+        const strong = document.createElement("strong");
+        strong.textContent = value === null || value === undefined
+          ? "Not specified"
+          : String(value) + " " + unit;
+        metric.append(small, strong);
+        metrics.append(metric);
+      });
+      body.append(metrics);
+
+      if (row.notes) {
+        const notes = document.createElement("p");
+        notes.className = "reference-notes";
+        const label = document.createElement("strong");
+        label.textContent = "Notes: ";
+        notes.append(label, document.createTextNode(row.notes));
+        body.append(notes);
+      }
+      if (row.source_reference) {
+        const source = document.createElement("p");
+        source.className = "reference-source";
+        source.textContent = "Listed source: " + row.source_reference;
+        body.append(source);
+      }
+      card.append(summary, body);
+      feedsList.append(card);
+    });
+  }
+
+  async function loadFeedCompositions() {
+    const config = window.NUTRICARE_SUPABASE || {};
+    if (!config.url || !config.publishableKey || !window.supabase) {
+      feedsStatus.textContent = "Database connection details are not configured yet.";
+      return;
+    }
+    try {
+      const client = window.supabase.createClient(config.url, config.publishableKey);
+      const { data, error } = await client
+        .from("feed_compositions")
+        .select("*")
+        .eq("approval_status", "approved")
+        .order("category", { ascending: true })
+        .order("product_name", { ascending: true });
+      if (error) throw error;
+      feedRows = data || [];
+      feedsStatus.textContent = feedRows.length
+        ? feedRows.length + " approved feed products loaded."
+        : "Connected successfully. No feed compositions have been approved yet.";
+      renderFeedRows();
+    } catch (error) {
+      console.error("NutriCare feed composition loading error:", error);
+      feedsStatus.textContent = "Could not load feed compositions. Please check the database connection and table permissions.";
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "The feed compositions database could not be reached. Other app sections are still available.";
+      feedsList.replaceChildren(empty);
+    }
+  }
+
+  feedsSearch.addEventListener("input", renderFeedRows);
+  loadFeedCompositions();
+
   // Biochemical reference ranges are loaded only after clinical approval.
   const biochemistryList = document.getElementById("biochemistryList");
   const biochemistryStatus = document.getElementById("biochemistryStatus");
