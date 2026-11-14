@@ -1,72 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>NutriCare SA</title>
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json" />
-
-  <!-- App Icon -->
-  <link rel="icon" href="icon-192.png" type="image/png" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176b45">
+  <meta name="description" content="NutriCare SA is a practical clinical nutrition reference for South African healthcare professionals.">
+  <title>NutriCare SA | Clinical Nutrition Reference</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
-
 <body>
-
-  <!-- ================= Header ================= -->
-  <header>
-    <h1>NutriCare SA</h1>
-    <p>Clinical Nutrition Reference</p>
-
-    <!-- Install Button (Correct Placement) -->
-    <button id="installBtn" hidden>
-      📲 Install NutriCare SA
-    </button>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="NutriCare SA home">
+      <span class="brand-mark" aria-hidden="true">N</span>
+      <span><strong>NutriCare <span>SA</span></strong><small>Clinical Nutrition Reference</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+      <a class="nav-link active" href="#home" data-page="home">Home</a>
+      <a class="nav-link" href="#adult" data-page="adult">Adult</a>
+      <a class="nav-link" href="#paediatric" data-page="paediatric">Paediatric</a>
+      <a class="nav-link" href="#biochemistry" data-page="biochemistry">Biochemistry</a>
+      <a class="nav-link" href="#fluids" data-page="fluids">Fluids</a>
+      <a class="nav-link" href="#about" data-page="about">About</a>
+    </nav>
   </header>
 
-  <!-- ================= Main Content ================= -->
   <main>
+    <section class="page active" id="page-home" data-page-section="home">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">PRACTICAL • EVIDENCE-INFORMED • SOUTH AFRICAN CONTEXT</p>
+          <h1>Nutrition care, <span>made clearer.</span></h1>
+          <p class="hero-text">A practical clinical nutrition reference to support everyday decisions in healthcare settings.</p>
+          <a class="primary-button" href="#adult" data-page="adult">Explore clinical references <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-circle"></div>
+          <div class="art-card"><span>🥗</span><strong>Nutrition</strong><small>Care that counts</small></div>
+          <div class="art-leaf">✳</div>
+        </div>
+      </div>
 
-    <!-- Adult Section -->
-    <section id="adult">
-      <h2>Adult Recommendations</h2>
-      <input 
-        type="text" 
-        id="adultSearch" 
-        placeholder="Search adult conditions..." 
-      />
-      <div id="adultContainer"></div>
+      <div class="section-heading">
+        <div><p class="eyebrow">YOUR QUICK REFERENCE</p><h2>Explore NutriCare SA</h2></div>
+        <p>Choose a section to get started.</p>
+      </div>
+
+      <div class="quick-grid">
+        <a class="quick-card" href="#adult" data-page="adult"><span class="quick-icon">🩺</span><span class="quick-title">Adult nutrition</span><span class="quick-description">Recommendations for common adult clinical conditions.</span><span class="card-arrow">Explore →</span></a>
+        <a class="quick-card" href="#paediatric" data-page="paediatric"><span class="quick-icon">🧒</span><span class="quick-title">Paediatric nutrition</span><span class="quick-description">Nutrition guidance for infants, children and adolescents.</span><span class="card-arrow">Explore →</span></a>
+        <a class="quick-card" href="#biochemistry" data-page="biochemistry"><span class="quick-icon">🧪</span><span class="quick-title">Biochemical reference</span><span class="quick-description">A quick reference for common laboratory markers.</span><span class="card-arrow">Explore →</span></a>
+        <a class="quick-card" href="#fluids" data-page="fluids"><span class="quick-icon">💧</span><span class="quick-title">Fluid requirements</span><span class="quick-description">Fluid calculation guidance and practical reference tools.</span><span class="card-arrow">Explore →</span></a>
+      </div>
+
+      <aside class="notice">
+        <span class="notice-icon">ⓘ</span>
+        <div><strong>Clinical reminder</strong><p>Use this app as a reference alongside current guidelines, local protocols, laboratory ranges and professional clinical judgement.</p></div>
+      </aside>
     </section>
 
-    <!-- Paediatric Section -->
-    <section id="paediatric">
-      <h2>Paediatric Recommendations</h2>
-      <input 
-        type="text" 
-        id="paediatricSearch" 
-        placeholder="Search paediatric conditions..." 
-      />
-      <div id="paediatricContainer"></div>
+    <section class="page content-page" id="page-adult" data-page-section="adult">
+      <p class="eyebrow">CLINICAL REFERENCE</p><h1>Adult nutrition recommendations</h1>
+      <p class="page-intro">Nutrition guidance for common adult clinical conditions.</p>
+      <div class="coming-panel"><span>🩺</span><h2>Adult reference</h2><p>This section is being prepared. The next build step will connect and test the adult recommendation data.</p></div>
     </section>
 
+    <section class="page content-page" id="page-paediatric" data-page-section="paediatric">
+      <p class="eyebrow">CLINICAL REFERENCE</p><h1>Paediatric nutrition recommendations</h1>
+      <p class="page-intro">Nutrition guidance for infants, children and adolescents.</p>
+      <div class="coming-panel"><span>🧒</span><h2>Paediatric reference</h2><p>This section is being prepared. The next build step will connect and test the paediatric recommendation data.</p></div>
+    </section>
+
+    <section class="page content-page" id="page-biochemistry" data-page-section="biochemistry">
+      <p class="eyebrow">LABORATORY REFERENCE</p><h1>Biochemical reference</h1>
+      <p class="page-intro">A quick reference to common biochemical and haematological markers.</p>
+      <div class="coming-panel"><span>🧪</span><h2>Biochemistry reference</h2><p>This section is being prepared. Reference intervals will need to be checked against local laboratory standards.</p></div>
+    </section>
+
+    <section class="page content-page" id="page-fluids" data-page-section="fluids">
+      <p class="eyebrow">CALCULATION SUPPORT</p><h1>Fluid requirements</h1>
+      <p class="page-intro">Practical fluid calculation guidance for clinical nutrition care.</p>
+      <div class="coming-panel"><span>💧</span><h2>Fluid reference</h2><p>This section is being prepared. Calculation methods and clinical cautions will be added and tested.</p></div>
+    </section>
+
+    <section class="page content-page" id="page-about" data-page-section="about">
+      <p class="eyebrow">ABOUT THE PROJECT</p><h1>About NutriCare SA</h1>
+      <p class="page-intro">A South African-focused clinical nutrition reference project.</p>
+      <div class="coming-panel"><span>🌿</span><h2>Supporting nutrition care</h2><p>NutriCare SA is designed as a practical reference for healthcare professionals. It does not replace individual assessment, current clinical guidelines or local hospital protocols.</p></div>
+    </section>
   </main>
 
-  <!-- ================= Footer ================= -->
-  <footer class="app-footer">
-    <p><strong>NutriCare SA v1.0</strong></p>
-    <p>Last updated: <span id="lastUpdated"></span></p>
-    <p class="disclaimer">
-      For clinical reference only. Always apply professional judgement.
-    </p>
+  <footer class="site-footer">
+    <strong>NutriCare SA</strong><span>Clinical Nutrition Reference</span>
+    <small>For professional reference. Apply clinical judgement and local protocols.</small>
   </footer>
-
-  <!-- JavaScript -->
   <script src="script.js"></script>
-
 </body>
 </html>
