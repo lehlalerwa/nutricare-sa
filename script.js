@@ -146,4 +146,115 @@ document.addEventListener("DOMContentLoaded", () => {
 
   adultSearch.addEventListener("input", renderAdultRows);
   loadAdultRecommendations();
+
+  // Paediatric recommendations are loaded only after clinical approval.
+  const paediatricList = document.getElementById("paediatricList");
+  const paediatricStatus = document.getElementById("paediatricStatus");
+  const paediatricSearch = document.getElementById("paediatricSearch");
+  let paediatricRows = [];
+
+  function renderPaediatricRows() {
+    const query = (paediatricSearch.value || "").trim().toLowerCase();
+    const filtered = paediatricRows.filter(row =>
+      [row.condition, row.age_group, row.description, row.notes, row.source_reference]
+        .some(value => String(value || "").toLowerCase().includes(query))
+    );
+
+    paediatricList.replaceChildren();
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = paediatricRows.length
+        ? "No matching entries. Try another search."
+        : "No approved paediatric recommendations are available yet. Draft entries remain hidden until reviewed.";
+      paediatricList.append(empty);
+      return;
+    }
+
+    filtered.forEach(row => {
+      const card = document.createElement("details");
+      card.className = "reference-card";
+      const summary = document.createElement("summary");
+      summary.textContent = safeText(row.condition);
+      const body = document.createElement("div");
+      body.className = "reference-card-body";
+
+      const context = document.createElement("p");
+      context.className = "reference-description";
+      context.textContent = "Age group: " + safeText(row.age_group) +
+        (row.description ? " • " + row.description : "");
+      body.append(context);
+
+      const metrics = document.createElement("div");
+      metrics.className = "reference-metrics";
+      [
+        ["Energy", row.energy_requirement, "kcal/kg/day"],
+        ["Protein", row.protein_requirement, "g/kg/day"],
+        ["Fat", row.fat_requirement, "as listed"],
+        ["Carbohydrate", row.carbohydrate_requirement, "g/kg/day"],
+        ["Fluids", row.fluid_requirement, "mL/kg/day"]
+      ].forEach(([label, value, unit]) => {
+        const metric = document.createElement("div");
+        metric.className = "metric";
+        const small = document.createElement("small");
+        small.textContent = label;
+        const strong = document.createElement("strong");
+        const display = safeText(value);
+        strong.textContent = display === "Not specified" ? display : display + " " + unit;
+        metric.append(small, strong);
+        metrics.append(metric);
+      });
+      body.append(metrics);
+
+      if (row.notes) {
+        const notes = document.createElement("p");
+        notes.className = "reference-notes";
+        const label = document.createElement("strong");
+        label.textContent = "Clinical notes: ";
+        notes.append(label, document.createTextNode(row.notes));
+        body.append(notes);
+      }
+      if (row.source_reference) {
+        const source = document.createElement("p");
+        source.className = "reference-source";
+        source.textContent = "Listed source: " + row.source_reference;
+        body.append(source);
+      }
+      card.append(summary, body);
+      paediatricList.append(card);
+    });
+  }
+
+  async function loadPaediatricRecommendations() {
+    const config = window.NUTRICARE_SUPABASE || {};
+    if (!config.url || !config.publishableKey || !window.supabase) {
+      paediatricStatus.textContent = "Database connection details are not configured yet.";
+      return;
+    }
+    try {
+      const client = window.supabase.createClient(config.url, config.publishableKey);
+      const { data, error } = await client
+        .from("paediatric_recommendations")
+        .select("*")
+        .eq("approval_status", "approved")
+        .order("display_order", { ascending: true })
+        .order("condition", { ascending: true });
+      if (error) throw error;
+      paediatricRows = data || [];
+      paediatricStatus.textContent = paediatricRows.length
+        ? paediatricRows.length + " approved reference entries loaded."
+        : "Connected successfully. No paediatric entries have been approved yet.";
+      renderPaediatricRows();
+    } catch (error) {
+      console.error("NutriCare paediatric reference loading error:", error);
+      paediatricStatus.textContent = "Could not load the paediatric reference. Please check the database connection and table permissions.";
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "The paediatric database could not be reached. Other app sections remain available.";
+      paediatricList.replaceChildren(empty);
+    }
+  }
+
+  paediatricSearch.addEventListener("input", renderPaediatricRows);
+  loadPaediatricRecommendations();
 });
