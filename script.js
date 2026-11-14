@@ -401,7 +401,20 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const groupedFeeds = new Map();
     filtered.forEach(row => {
+      const category = row.category || "Other products";
+      if (!groupedFeeds.has(category)) groupedFeeds.set(category, []);
+      groupedFeeds.get(category).push(row);
+    });
+
+    [...groupedFeeds.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([categoryName, rows]) => {
+      const heading = document.createElement("h2");
+      heading.className = "feed-category-heading";
+      heading.textContent = categoryName;
+      feedsList.append(heading);
+
+      rows.forEach(row => {
       const card = document.createElement("details");
       card.className = "reference-card";
       const summary = document.createElement("summary");
@@ -460,6 +473,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       card.append(summary, body);
       feedsList.append(card);
+      });
     });
   }
 
