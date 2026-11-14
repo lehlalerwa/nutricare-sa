@@ -257,4 +257,125 @@ document.addEventListener("DOMContentLoaded", () => {
 
   paediatricSearch.addEventListener("input", renderPaediatricRows);
   loadPaediatricRecommendations();
+
+  // Biochemical reference ranges are loaded only after clinical approval.
+  const biochemistryList = document.getElementById("biochemistryList");
+  const biochemistryStatus = document.getElementById("biochemistryStatus");
+  const biochemistrySearch = document.getElementById("biochemistrySearch");
+  let biochemistryRows = [];
+
+  function renderBiochemistryRows() {
+    const query = (biochemistrySearch.value || "").trim().toLowerCase();
+    const filtered = biochemistryRows.filter(row =>
+      [row.test_name, row.population_group, row.age_range, row.sex, row.specimen,
+       row.unit, row.reference_range_text, row.notes, row.source_reference]
+        .some(value => String(value || "").toLowerCase().includes(query))
+    );
+
+    biochemistryList.replaceChildren();
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = biochemistryRows.length
+        ? "No matching laboratory tests. Try another search."
+        : "No approved biochemical reference ranges are available yet. Draft entries remain hidden until reviewed.";
+      biochemistryList.append(empty);
+      return;
+    }
+
+    filtered.forEach(row => {
+      const card = document.createElement("details");
+      card.className = "reference-card";
+      const summary = document.createElement("summary");
+      summary.textContent = safeText(row.test_name);
+      const body = document.createElement("div");
+      body.className = "reference-card-body";
+
+      const contextParts = [];
+      if (row.population_group) contextParts.push(row.population_group);
+      if (row.age_range) contextParts.push("Age: " + row.age_range);
+      if (row.sex) contextParts.push("Sex: " + row.sex);
+      if (row.specimen) contextParts.push("Specimen: " + row.specimen);
+      if (contextParts.length) {
+        const context = document.createElement("p");
+        context.className = "reference-description";
+        context.textContent = contextParts.join(" • ");
+        body.append(context);
+      }
+
+      const metrics = document.createElement("div");
+      metrics.className = "reference-metrics";
+      const range = row.reference_range_text ||
+        ((row.lower_limit !== null && row.lower_limit !== undefined) ||
+         (row.upper_limit !== null && row.upper_limit !== undefined)
+          ? (row.lower_limit ?? "No lower limit") + " – " + (row.upper_limit ?? "No upper limit")
+          : "Not specified");
+      [
+        ["Reference range", range, ""],
+        ["Unit", row.unit, ""]
+      ].forEach(([label, value, unit]) => {
+        const metric = document.createElement("div");
+        metric.className = "metric";
+        const small = document.createElement("small");
+        small.textContent = label;
+        const strong = document.createElement("strong");
+        const display = safeText(value);
+        strong.textContent = display === "Not specified" ? display : display + (unit ? " " + unit : "");
+        metric.append(small, strong);
+        metrics.append(metric);
+      });
+      body.append(metrics);
+
+      if (row.notes) {
+        const notes = document.createElement("p");
+        notes.className = "reference-notes";
+        const label = document.createElement("strong");
+        label.textContent = "Notes: ";
+        notes.append(label, document.createTextNode(row.notes));
+        body.append(notes);
+      }
+      if (row.source_reference) {
+        const source = document.createElement("p");
+        source.className = "reference-source";
+        source.textContent = "Listed source: " + row.source_reference;
+        body.append(source);
+      }
+      card.append(summary, body);
+      biochemistryList.append(card);
+    });
+  }
+
+  async function loadBiochemistryReference() {
+    const config = window.NUTRICARE_SUPABASE || {};
+    if (!config.url || !config.publishableKey || !window.supabase) {
+      biochemistryStatus.textContent = "Database connection details are not configured yet.";
+      return;
+    }
+    try {
+      const client = window.supabase.createClient(config.url, config.publishableKey);
+      const { data, error } = await client
+        .from("biochemical_reference_ranges")
+        .select("*")
+        .eq("approval_status", "approved")
+        .order("test_name", { ascending: true })
+        .order("population_group", { ascending: true });
+      if (error) throw error;
+      biochemistryRows = data || [];
+      biochemistryStatus.textContent = biochemistryRows.length
+        ? biochemistryRows.length + " approved laboratory reference entries loaded."
+        : "Connected successfully. No biochemical reference ranges have been approved yet.";
+      renderBiochemistryRows();
+    } catch (error) {
+      console.error("NutriCare biochemical reference loading error:", error);
+      biochemistryStatus.textContent = "Could not load the biochemical reference. Please check the database connection and table permissions.";
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "The biochemical reference database could not be reached. Other app sections remain available.";
+      biochemistryList.replaceChildren(empty);
+    }
+  }
+
+  biochemistrySearch.addEventListener("input", renderBiochemistryRows);
+  loadBiochemistryReference();
+
 });
