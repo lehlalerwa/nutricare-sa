@@ -88,8 +88,14 @@
 
     <section class="page content-page" id="page-biochemistry" data-page-section="biochemistry">
       <p class="eyebrow">LABORATORY REFERENCE</p><h1>Biochemical reference</h1>
-      <p class="page-intro">A quick reference to common biochemical and haematological markers.</p>
-      <div class="coming-panel"><span>🧪</span><h2>Biochemistry reference</h2><p>This section is being prepared. Reference intervals will need to be checked against local laboratory standards.</p></div>
+      <p class="page-intro">Search common biochemical and haematological markers by test, population, age or specimen.</p>
+      <div class="reference-toolbar">
+        <label class="search-label" for="biochemistrySearch">Search a laboratory test</label>
+        <input id="biochemistrySearch" class="search-input" type="search" placeholder="e.g. sodium, haemoglobin, creatinine, potassium" autocomplete="off">
+        <p class="data-status" id="biochemistryStatus" role="status">Connecting to the biochemical reference database…</p>
+      </div>
+      <div class="reference-list" id="biochemistryList" aria-live="polite"></div>
+      <p class="clinical-caveat">Reference intervals vary by laboratory method, analyser, age, sex and population. Always use the reporting laboratory's own reference interval when interpreting a result. Draft entries remain hidden until reviewed and approved.</p>
     </section>
 
     <section class="page content-page" id="page-fluids" data-page-section="fluids">
