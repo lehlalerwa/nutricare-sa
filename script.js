@@ -258,6 +258,124 @@ document.addEventListener("DOMContentLoaded", () => {
   paediatricSearch.addEventListener("input", renderPaediatricRows);
   loadPaediatricRecommendations();
 
+  // Fluid guidelines are loaded only after clinical approval.
+  const fluidsList = document.getElementById("fluidsList");
+  const fluidsStatus = document.getElementById("fluidsStatus");
+  const fluidsSearch = document.getElementById("fluidsSearch");
+  let fluidRows = [];
+
+  function renderFluidRows() {
+    const query = (fluidsSearch.value || "").trim().toLowerCase();
+    const filtered = fluidRows.filter(row =>
+      [row.population_group, row.age_group, row.method, row.formula, row.notes, row.source_reference]
+        .some(value => String(value || "").toLowerCase().includes(query))
+    );
+
+    fluidsList.replaceChildren();
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = fluidRows.length
+        ? "No matching fluid guidelines. Try another search."
+        : "No approved fluid guidelines are available yet. Draft entries remain hidden until reviewed.";
+      fluidsList.append(empty);
+      return;
+    }
+
+    filtered.forEach(row => {
+      const card = document.createElement("details");
+      card.className = "reference-card";
+      const summary = document.createElement("summary");
+      summary.textContent = safeText(row.population_group);
+      const body = document.createElement("div");
+      body.className = "reference-card-body";
+
+      if (row.age_group) {
+        const context = document.createElement("p");
+        context.className = "reference-description";
+        context.textContent = "Age group: " + row.age_group;
+        body.append(context);
+      }
+
+      if (row.method || row.formula) {
+        const method = document.createElement("div");
+        method.className = "reference-metrics";
+        if (row.method) {
+          const methodMetric = document.createElement("div");
+          methodMetric.className = "metric";
+          const methodLabel = document.createElement("small");
+          methodLabel.textContent = "Method";
+          const methodValue = document.createElement("strong");
+          methodValue.textContent = row.method;
+          methodMetric.append(methodLabel, methodValue);
+          method.append(methodMetric);
+        }
+        if (row.formula) {
+          const formulaMetric = document.createElement("div");
+          formulaMetric.className = "metric";
+          const formulaLabel = document.createElement("small");
+          formulaLabel.textContent = "Formula / guidance";
+          const formulaValue = document.createElement("strong");
+          formulaValue.textContent = row.formula;
+          formulaMetric.append(formulaLabel, formulaValue);
+          method.append(formulaMetric);
+        }
+        body.append(method);
+      }
+
+      if (row.notes) {
+        const notes = document.createElement("p");
+        notes.className = "reference-notes";
+        const label = document.createElement("strong");
+        label.textContent = "Clinical notes: ";
+        notes.append(label, document.createTextNode(row.notes));
+        body.append(notes);
+      }
+      if (row.source_reference) {
+        const source = document.createElement("p");
+        source.className = "reference-source";
+        source.textContent = "Listed source: " + row.source_reference;
+        body.append(source);
+      }
+      card.append(summary, body);
+      fluidsList.append(card);
+    });
+  }
+
+  async function loadFluidGuidelines() {
+    const config = window.NUTRICARE_SUPABASE || {};
+    if (!config.url || !config.publishableKey || !window.supabase) {
+      fluidsStatus.textContent = "Database connection details are not configured yet.";
+      fluidsList.innerHTML = '<div class="empty-state">The fluid guidelines database is not connected yet.</div>';
+      return;
+    }
+    try {
+      const client = window.supabase.createClient(config.url, config.publishableKey);
+      const { data, error } = await client
+        .from("fluid_guidelines")
+        .select("*")
+        .eq("approval_status", "approved")
+        .order("display_order", { ascending: true })
+        .order("population_group", { ascending: true });
+      if (error) throw error;
+      fluidRows = data || [];
+      fluidsStatus.textContent = fluidRows.length
+        ? fluidRows.length + " approved fluid guidelines loaded."
+        : "Connected successfully. No fluid guidelines have been approved yet.";
+      renderFluidRows();
+    } catch (error) {
+      console.error("NutriCare fluid guideline loading error:", error);
+      fluidsStatus.textContent = "Could not load fluid guidelines. Please check the database connection and table permissions.";
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "The fluid guidelines database could not be reached. Other app sections are still available.";
+      fluidsList.replaceChildren(empty);
+    }
+  }
+
+  fluidsSearch.addEventListener("input", renderFluidRows);
+  loadFluidGuidelines();
+
   // Biochemical reference ranges are loaded only after clinical approval.
   const biochemistryList = document.getElementById("biochemistryList");
   const biochemistryStatus = document.getElementById("biochemistryStatus");
