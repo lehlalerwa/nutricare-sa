@@ -41,3 +41,6 @@ main{width:min(1160px,calc(100% - 40px));margin:0 auto;min-height:70vh}.page{dis
 .clinical-caveat{font-size:11px;color:#7a6750;background:#fffaf0;border:1px solid #f0e5c9;padding:13px 15px;border-radius:12px;margin-top:18px}
 .empty-state{background:#fff;border:1px dashed #cbd9d0;border-radius:14px;padding:24px;text-align:center;color:var(--muted);font-size:13px}
 @media(max-width:600px){.reference-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.reference-card summary{padding:15px}.reference-card-body{padding:0 15px 15px}}
+
+.feed-category-heading{font-size:15px;color:var(--green-dark);margin:18px 2px 0;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.feed-category-heading:first-child{margin-top:4px}
