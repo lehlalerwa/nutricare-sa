@@ -17,3 +17,27 @@ main{width:min(1160px,calc(100% - 40px));margin:0 auto;min-height:70vh}.page{dis
 @media(max-width:900px){.quick-grid{grid-template-columns:repeat(2,1fr)}.main-nav{gap:0}.nav-link{padding:8px 9px;font-size:12px}}
 @media(max-width:680px){.site-header{min-height:68px}.menu-toggle{display:block}.main-nav{display:none;position:absolute;top:67px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:10px 18px 16px;flex-direction:column;align-items:stretch;box-shadow:var(--shadow)}.main-nav.open{display:flex}.nav-link{padding:11px 12px}.hero{grid-template-columns:1fr;min-height:0;padding:30px 24px 15px}.hero-art{height:175px}.art-circle{width:150px;height:150px}.art-card{width:130px;height:112px}.art-card span{font-size:34px}.art-leaf{right:16%;top:0;font-size:45px}.section-heading{display:block;margin-top:32px}.section-heading>p{margin-top:7px}.quick-grid{gap:10px}.quick-card{padding:15px;min-height:205px}main{width:min(100% - 28px,1160px)}.page{padding-top:25px}}
 @media(max-width:380px){.quick-grid{grid-template-columns:1fr}.quick-card{min-height:170px}}
+
+/* Reference data interface */
+.reference-toolbar{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin:22px 0 16px}
+.search-label{display:block;font-size:12px;font-weight:800;color:var(--green-dark);margin-bottom:7px}
+.search-input{width:100%;max-width:560px;border:1px solid #cbd9d0;border-radius:10px;padding:12px 14px;font:inherit;font-size:14px;color:var(--ink);background:#fff;outline:none}
+.search-input:focus{border-color:var(--green);box-shadow:0 0 0 3px #176b451a}
+.data-status{font-size:12px;color:var(--muted);margin:10px 0 0}
+.reference-list{display:grid;gap:12px}
+.reference-card{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 3px 12px rgba(25,70,46,.025)}
+.reference-card summary{cursor:pointer;list-style:none;padding:17px 19px;display:flex;justify-content:space-between;align-items:center;gap:14px;font-weight:800;color:#234b35}
+.reference-card summary::-webkit-details-marker{display:none}
+.reference-card summary:after{content:"＋";color:var(--green);font-size:20px;font-weight:500}
+.reference-card[open] summary:after{content:"−"}
+.reference-card-body{padding:0 19px 18px;border-top:1px solid var(--line)}
+.reference-description{font-size:13px;color:var(--muted);margin:13px 0}
+.reference-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.metric{background:var(--mint);border-radius:10px;padding:10px}
+.metric small{display:block;color:#54705e;font-size:10px;line-height:1.35}
+.metric strong{display:block;color:#174c30;font-size:13px;margin-top:4px;overflow-wrap:anywhere}
+.reference-notes{font-size:12px;margin:12px 0;color:#40564a}
+.reference-source{font-size:10px;color:#7a8980;margin:8px 0 0}
+.clinical-caveat{font-size:11px;color:#7a6750;background:#fffaf0;border:1px solid #f0e5c9;padding:13px 15px;border-radius:12px;margin-top:18px}
+.empty-state{background:#fff;border:1px dashed #cbd9d0;border-radius:14px;padding:24px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:600px){.reference-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.reference-card summary{padding:15px}.reference-card-body{padding:0 15px 15px}}
