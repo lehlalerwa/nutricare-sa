@@ -101,7 +101,13 @@
     <section class="page content-page" id="page-fluids" data-page-section="fluids">
       <p class="eyebrow">CALCULATION SUPPORT</p><h1>Fluid requirements</h1>
       <p class="page-intro">Practical fluid calculation guidance for clinical nutrition care.</p>
-      <div class="coming-panel"><span>💧</span><h2>Fluid reference</h2><p>This section is being prepared. Calculation methods and clinical cautions will be added and tested.</p></div>
+      <div class="reference-toolbar">
+        <label class="search-label" for="fluidsSearch">Search a population group or method</label>
+        <input id="fluidsSearch" class="search-input" type="search" placeholder="e.g. adults, children, Holliday-Segar" autocomplete="off">
+        <p class="data-status" id="fluidsStatus" role="status">Connecting to the fluid guidelines database…</p>
+      </div>
+      <div class="reference-list" id="fluidsList" aria-live="polite"></div>
+      <p class="clinical-caveat">Fluid estimates are starting points, not prescriptions. Individualise for clinical status, ongoing losses, renal and cardiac function, electrolytes, route of intake and local protocols. Draft methods remain hidden until reviewed and approved.</p>
     </section>
 
     <section class="page content-page" id="page-about" data-page-section="about">
