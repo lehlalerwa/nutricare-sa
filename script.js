@@ -128,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const { data, error } = await client
         .from("adult_recommendations")
         .select("*")
+        .eq("approval_status", "approved")
         .order("display_order", { ascending: true })
         .order("condition", { ascending: true });
       if (error) throw error;
