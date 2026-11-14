@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderFeedRows() {
     const query = (feedsSearch.value || "").trim().toLowerCase();
     const filtered = feedRows.filter(row =>
-      [row.product_name, row.category, row.notes, row.source_reference]
+      [row.product_name, row.category, row.measurement_basis, row.notes, row.source_reference]
         .some(value => String(value || "").toLowerCase().includes(query))
     );
 
@@ -416,13 +416,15 @@ document.addEventListener("DOMContentLoaded", () => {
         body.append(category);
       }
 
+      const basis = row.measurement_basis || "per 100 mL";
+      const unit = basis === "per 100 g" ? "per 100 g" : "per 100 mL";
       const metrics = document.createElement("div");
       metrics.className = "reference-metrics";
       [
-        ["Energy", row.energy_kcal_per_100ml, "kcal/100 mL"],
-        ["Protein", row.protein_g_per_100ml, "g/100 mL"],
-        ["Carbohydrate", row.carbohydrate_g_per_100ml, "g/100 mL"],
-        ["Fat", row.fat_g_per_100ml, "g/100 mL"]
+        ["Energy", row.energy_kcal_per_100_unit, "kcal " + unit],
+        ["Protein", row.protein_g_per_100_unit, "g " + unit],
+        ["Carbohydrate", row.carbohydrate_g_per_100_unit, "g " + unit],
+        ["Fat", row.fat_g_per_100_unit, "g " + unit]
       ].forEach(([label, value, unit]) => {
         const metric = document.createElement("div");
         metric.className = "metric";
@@ -436,6 +438,11 @@ document.addEventListener("DOMContentLoaded", () => {
         metrics.append(metric);
       });
       body.append(metrics);
+
+      const basisNote = document.createElement("p");
+      basisNote.className = "reference-description";
+      basisNote.textContent = "Nutritional values shown " + unit + ".";
+      body.append(basisNote);
 
       if (row.notes) {
         const notes = document.createElement("p");
