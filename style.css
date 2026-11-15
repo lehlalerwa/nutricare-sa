@@ -44,3 +44,5 @@ main{width:min(1160px,calc(100% - 40px));margin:0 auto;min-height:70vh}.page{dis
 
 .feed-category-heading{font-size:15px;color:var(--green-dark);margin:18px 2px 0;padding-bottom:7px;border-bottom:1px solid var(--line)}
 .feed-category-heading:first-child{margin-top:4px}
+
+.feed-type-badge{display:inline-block;margin:12px 0 0;padding:5px 9px;border-radius:999px;background:var(--mint);color:var(--green-dark);font-size:10px;font-weight:800;letter-spacing:.2px}
