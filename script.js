@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderFeedRows() {
     const query = (feedsSearch.value || "").trim().toLowerCase();
     const filtered = feedRows.filter(row =>
-      [row.product_name, row.category, row.measurement_basis, row.notes, row.source_reference]
+      [row.product_name, row.category, row.product_type, row.measurement_basis, row.notes, row.source_reference]
         .some(value => String(value || "").toLowerCase().includes(query))
     );
 
@@ -401,19 +401,31 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const productTypeLabels = {
+      complete_enteral_feed: "Complete enteral feeds",
+      specialised_infant_formula: "Specialised infant formula",
+      human_milk_fortifier: "Human milk fortifier",
+      modular_supplement: "Modular supplements",
+      nutritionally_incomplete_specialised: "Nutritionally incomplete specialised products"
+    };
     const groupedFeeds = new Map();
     filtered.forEach(row => {
-      const category = row.category || "Other products";
-      if (!groupedFeeds.has(category)) groupedFeeds.set(category, []);
-      groupedFeeds.get(category).push(row);
+      const type = row.product_type || "other";
+      if (!groupedFeeds.has(type)) groupedFeeds.set(type, []);
+      groupedFeeds.get(type).push(row);
     });
 
-    [...groupedFeeds.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([categoryName, rows]) => {
+    [...groupedFeeds.entries()].sort((a, b) => {
+      const labelA = productTypeLabels[a[0]] || "Other products";
+      const labelB = productTypeLabels[b[0]] || "Other products";
+      return labelA.localeCompare(labelB);
+    }).forEach(([type, rows]) => {
       const heading = document.createElement("h2");
       heading.className = "feed-category-heading";
-      heading.textContent = categoryName;
+      heading.textContent = productTypeLabels[type] || "Other products";
       feedsList.append(heading);
 
+      rows.sort((a, b) => String(a.product_name || "").localeCompare(String(b.product_name || "")));
       rows.forEach(row => {
       const card = document.createElement("details");
       card.className = "reference-card";
@@ -422,10 +434,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const body = document.createElement("div");
       body.className = "reference-card-body";
 
+      if (row.product_type) {
+        const typeBadge = document.createElement("span");
+        typeBadge.className = "feed-type-badge";
+        typeBadge.textContent = productTypeLabels[row.product_type] || "Other product";
+        body.append(typeBadge);
+      }
       if (row.category) {
         const category = document.createElement("p");
         category.className = "reference-description";
-        category.textContent = "Category: " + row.category;
+        category.textContent = "Product category: " + row.category;
         body.append(category);
       }
 
